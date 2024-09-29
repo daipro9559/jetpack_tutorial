@@ -20,4 +20,6 @@ class MyViewModel @Inject constructor(private val productUseCase: ProductUseCase
           emit(it)
       }
     }
+
+    suspend fun fetchProduct() = productUseCase.fetchProducts()
 }

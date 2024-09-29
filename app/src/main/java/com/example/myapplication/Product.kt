@@ -7,7 +7,7 @@ class Product(
  val id: Int,
  val title: String,
  val description: String,
- val price: Int,
+ val price: Float,
  val discountPercentage: Double,
  val rating: Double,
  val stock: Int,
