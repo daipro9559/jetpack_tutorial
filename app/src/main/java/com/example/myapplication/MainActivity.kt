@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.content.ClipData.Item
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -43,10 +45,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.example.myapplication.ui.theme.TutorialActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.UUID
 
@@ -69,11 +73,18 @@ class MainActivity : ComponentActivity() {
 //        setContent {
 //            Greeting(viewModel)
 //        }
-        
+        setContent {
+            MyApplicationTheme {
+                MyApp(viewModel)
+            }
+        }
+        startActivity(Intent(this, TutorialActivity::class.java).apply {
+//            packageName = this
+        })
     }
 }
 
-fun doSomeThing(){
+fun doSomeThing() {
     Log.d("Dainv", "Before do something")
     inlineFunc {
         Log.d("Dainv", "Inside lamda")
@@ -81,18 +92,26 @@ fun doSomeThing(){
     Log.d("Dainv", "Done do something")
 }
 
-fun noInline(block: ()-> Unit){
+fun noInline(block: () -> Unit) {
     Log.d("Dainv", "start noInline")
     block()
 }
 
-inline fun inlineFunc(block: () -> Unit){
+inline fun inlineFunc(block: () -> Unit) {
     Log.d("Dainv", "start inline")
     block()
 }
 
 @Composable
-fun Greeting(viewModel: MyViewModel, modifier: Modifier = Modifier) {
+fun MyApp(viewModel: MyViewModel, modifier: Modifier = Modifier){
+    Surface(modifier = modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.primary){
+        Greeting(viewModel = viewModel)
+    }
+}
+
+@Composable
+fun  Greeting(viewModel: MyViewModel, modifier: Modifier = Modifier) {
     val isLoading = remember {
         mutableStateOf(false)
     }
@@ -106,8 +125,8 @@ fun Greeting(viewModel: MyViewModel, modifier: Modifier = Modifier) {
         Log.d("Dainv", "outer side effect ${counter.value}")
     }
     val key = remember { UUID.randomUUID().toString() }
-    Log.d("Dainv", "key = $key" )
-    LaunchedEffect(isLoading.value){
+    Log.d("Dainv", "key = $key")
+    LaunchedEffect(isLoading.value) {
         if (isLoading.value) {
             listItem.value = viewModel.fetchProduct()
             isLoading.value = false
@@ -127,15 +146,15 @@ fun Greeting(viewModel: MyViewModel, modifier: Modifier = Modifier) {
         }
         Text(
             text = "Current counter ${counter.value}",
-            modifier = modifier
+            modifier = modifier.padding(20.dp)
         )
         Box {
-            if(isLoading.value){
+            if (isLoading.value) {
                 CircularProgressIndicator()
             } else {
                 LazyColumn() {
                     listItem?.value?.also {
-                        items(it){
+                        items(it) {
                             Text(it.title)
                         }
                     }
@@ -151,6 +170,7 @@ fun Greeting(viewModel: MyViewModel, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
+//    val viewModel: MyViewModel = ViewModelProvider(th)
     MyApplicationTheme {
 //        Greeting(viewModel = )
     }
@@ -169,17 +189,22 @@ fun Splash(modifier: Modifier = Modifier) {
             contentDescription = "Group 1000004817",
             modifier = Modifier
                 .align(alignment = Alignment.TopStart)
-                .offset(x = (-59.34375).dp,
-                    y = 0.4140625.dp)
+                .offset(
+                    x = (-59.34375).dp,
+                    y = 0.4140625.dp
+                )
                 .requiredWidth(width = 513.dp)
-                .requiredHeight(height = 522.dp))
+                .requiredHeight(height = 522.dp)
+        )
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .align(alignment = Alignment.Center)
-                .offset(x = 0.dp,
-                    y = (-0.0000152587890625).dp)
+                .offset(
+                    x = 0.dp,
+                    y = (-0.0000152587890625).dp
+                )
         ) {
             Image(
                 painter = painterResource(id = R.drawable.img_header),
@@ -187,7 +212,8 @@ fun Splash(modifier: Modifier = Modifier) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .requiredWidth(width = 140.dp)
-                    .requiredHeight(height = 116.dp))
+                    .requiredHeight(height = 116.dp)
+            )
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -195,13 +221,15 @@ fun Splash(modifier: Modifier = Modifier) {
                 Text(
                     text = "Smart translator",
                     color = Color(0xff151a35),
-                    style = MaterialTheme.typography.headlineMedium)
+                    style = MaterialTheme.typography.headlineMedium
+                )
                 Text(
                     text = "Translate your                    into any language",
                     color = Color(0xff151a35),
                     style = TextStyle(
                         fontSize = 18.sp,
-                        letterSpacing = 0.15.sp)
+                        letterSpacing = 0.15.sp
+                    )
                 )
             }
         }
@@ -210,15 +238,19 @@ fun Splash(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .align(alignment = Alignment.TopStart)
-                .offset(x = 142.dp,
-                    y = 482.dp)
+                .offset(
+                    x = 142.dp,
+                    y = 482.dp
+                )
                 .requiredWidth(width = 62.dp)
                 .clip(shape = RoundedCornerShape(3.dp))
                 .background(color = Color(0xff0099cc))
-                .padding(start = 10.dp,
+                .padding(
+                    start = 10.dp,
                     end = 10.dp,
                     top = 2.dp,
-                    bottom = 3.dp)
+                    bottom = 3.dp
+                )
         ) {
             Text(
                 text = "photo",
@@ -226,7 +258,9 @@ fun Splash(modifier: Modifier = Modifier) {
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    letterSpacing = 0.15.sp))
+                    letterSpacing = 0.15.sp
+                )
+            )
         }
     }
 }
