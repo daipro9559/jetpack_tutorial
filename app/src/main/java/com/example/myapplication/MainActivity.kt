@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -69,7 +70,16 @@ class MainActivity : ComponentActivity() {
 //        setContent {
 //            Greeting(viewModel)
 //        }
-        
+        setContent {
+            MyApplicationTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ){
+                    Greeting(viewModel)
+                }
+            }
+        }
     }
 }
 
@@ -125,10 +135,13 @@ fun Greeting(viewModel: MyViewModel, modifier: Modifier = Modifier) {
         }) {
             Text("Button 2 ")
         }
-        Text(
-            text = "Current counter ${counter.value}",
-            modifier = modifier
-        )
+        Surface (color = MaterialTheme.colorScheme.primary){
+            Text(
+                text = "Current counter ${counter.value}",
+                modifier = modifier
+            )
+        }
+
         Box {
             if(isLoading.value){
                 CircularProgressIndicator()
@@ -231,7 +244,7 @@ fun Splash(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(widthDp = 375, heightDp = 812)
+@Preview(widthDp = 375, heightDp = 812, showBackground = true)
 @Composable
 private fun SplashPreview() {
     Splash(Modifier)
