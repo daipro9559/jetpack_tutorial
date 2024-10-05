@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.content.ClipData.Item
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -44,10 +45,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.example.myapplication.ui.theme.TutorialActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.UUID
 
@@ -72,18 +75,16 @@ class MainActivity : ComponentActivity() {
 //        }
         setContent {
             MyApplicationTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ){
-                    Greeting(viewModel)
-                }
+                MyApp(viewModel)
             }
         }
+        startActivity(Intent(this, TutorialActivity::class.java).apply {
+//            packageName = this
+        })
     }
 }
 
-fun doSomeThing(){
+fun doSomeThing() {
     Log.d("Dainv", "Before do something")
     inlineFunc {
         Log.d("Dainv", "Inside lamda")
@@ -91,18 +92,26 @@ fun doSomeThing(){
     Log.d("Dainv", "Done do something")
 }
 
-fun noInline(block: ()-> Unit){
+fun noInline(block: () -> Unit) {
     Log.d("Dainv", "start noInline")
     block()
 }
 
-inline fun inlineFunc(block: () -> Unit){
+inline fun inlineFunc(block: () -> Unit) {
     Log.d("Dainv", "start inline")
     block()
 }
 
 @Composable
-fun Greeting(viewModel: MyViewModel, modifier: Modifier = Modifier) {
+fun MyApp(viewModel: MyViewModel, modifier: Modifier = Modifier){
+    Surface(modifier = modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.primary){
+        Greeting(viewModel = viewModel)
+    }
+}
+
+@Composable
+fun  Greeting(viewModel: MyViewModel, modifier: Modifier = Modifier) {
     val isLoading = remember {
         mutableStateOf(false)
     }
@@ -116,8 +125,8 @@ fun Greeting(viewModel: MyViewModel, modifier: Modifier = Modifier) {
         Log.d("Dainv", "outer side effect ${counter.value}")
     }
     val key = remember { UUID.randomUUID().toString() }
-    Log.d("Dainv", "key = $key" )
-    LaunchedEffect(isLoading.value){
+    Log.d("Dainv", "key = $key")
+    LaunchedEffect(isLoading.value) {
         if (isLoading.value) {
             listItem.value = viewModel.fetchProduct()
             isLoading.value = false
@@ -135,6 +144,10 @@ fun Greeting(viewModel: MyViewModel, modifier: Modifier = Modifier) {
         }) {
             Text("Button 2 ")
         }
+        Text(
+            text = "Current counter ${counter.value}",
+            modifier = modifier.padding(20.dp)
+        )
         Surface (color = MaterialTheme.colorScheme.primary){
             Text(
                 text = "Current counter ${counter.value}",
@@ -143,12 +156,12 @@ fun Greeting(viewModel: MyViewModel, modifier: Modifier = Modifier) {
         }
 
         Box {
-            if(isLoading.value){
+            if (isLoading.value) {
                 CircularProgressIndicator()
             } else {
                 LazyColumn() {
                     listItem?.value?.also {
-                        items(it){
+                        items(it) {
                             Text(it.title)
                         }
                     }
