@@ -71,7 +71,7 @@ class MainActivity : ComponentActivity() {
                 MyApp(viewModel)
             }
         }
-        startActivity(Intent(this, TutorialActivity::class.java).apply {
+        startActivity(Intent(this, BasicLayoutActivity::class.java).apply {
 //            packageName = this
         })
     }

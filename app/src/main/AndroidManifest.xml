@@ -30,6 +30,9 @@
             android:exported="false">
 
         </activity>
+        <activity android:name=".BasicLayoutActivity"
+            android:exported="false"
+            />
     </application>
 
 </manifest>
